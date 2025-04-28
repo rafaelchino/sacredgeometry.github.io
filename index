@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Phi (Φ)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #423d45;
+            color: #e8dbd1;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #c6871a;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #5a5560;
+            background: #fff;
+            font-size: 16px;
+        }
+
+        input {
+            width: 200px;
+            text-align: center;
+        }
+
+        select {
+            width: 100px;
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background-color: #c6871a;
+            color: #e8dbd1;
+            border: none;
+        }
+
+        .clear-btn {
+            background-color: #cac0b7;
+            color: #423d45;
+            border: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #5a5560;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #1b918d;
+            color: #e8dbd1;
+        }
+
+        .integer-part {
+            color: #e8dbd1;
+        }
+
+        .decimal-part {
+            color: #827a79;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Phi (Φ)</h1>
+    
+    <div class="container">
+        <div class="input-group">
+            <input type="number" id="inputNumber" placeholder="Digite um número">
+            <select id="rowCount">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        <div class="button-group">
+            <button class="calculate-btn" onclick="calculatePhi()">Calcular</button>
+            <button class="clear-btn" onclick="clearFields()">Limpar</button>
+        </div>
+    </div>
+
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Multiplicador</th>
+                <th>Divisão</th>
+                <th>Sequência Fibonacci</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+
+    <script>
+        const PHI = 1.61803398875;
+
+        function formatNumber(num) {
+            const formatted = num.toFixed(5);
+            const [integerPart, decimalPart] = formatted.split('.');
+            return `<span class="integer-part">(${integerPart})</span><span class="decimal-part">.${decimalPart}</span>`;
+        }
+
+        function calculatePhi() {
+            const input = parseFloat(document.getElementById('inputNumber').value);
+            const rowCount = parseInt(document.getElementById('rowCount').value);
+            const tableBody = document.getElementById('tableBody');
+            
+            if (isNaN(input)) {
+                alert('Por favor digite um número válido');
+                return;
+            }
+
+            tableBody.innerHTML = '';
+            
+            // Inicializa valores
+            let multiplierValue = input;
+            let divisionValue = input;
+            
+            // Prepara sequência Fibonacci
+            const fibSequence = [input, input];
+            for (let i = 2; i < rowCount; i++) {
+                fibSequence.push(fibSequence[i-1] + fibSequence[i-2]);
+            }
+
+            for (let i = 1; i <= rowCount; i++) {
+                const row = document.createElement('tr');
+                
+                // Número da linha
+                const numberCell = document.createElement('td');
+                numberCell.textContent = i;
+                row.appendChild(numberCell);
+
+                // Coluna Multiplicador
+                const multiplierCell = document.createElement('td');
+                multiplierCell.innerHTML = formatNumber(multiplierValue);
+                row.appendChild(multiplierCell);
+
+                // Coluna Divisão
+                const divisionCell = document.createElement('td');
+                divisionCell.innerHTML = formatNumber(divisionValue);
+                row.appendChild(divisionCell);
+
+                // Coluna Fibonacci
+                const fibCell = document.createElement('td');
+                fibCell.innerHTML = formatNumber(fibSequence[i-1]);
+                row.appendChild(fibCell);
+
+                tableBody.appendChild(row);
+
+                // Atualiza valores para próxima linha
+                multiplierValue *= PHI;
+                divisionValue /= PHI;
+            }
+        }
+
+        function clearFields() {
+            document.getElementById('inputNumber').value = '';
+            document.getElementById('tableBody').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
